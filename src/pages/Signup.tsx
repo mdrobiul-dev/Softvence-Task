@@ -27,7 +27,7 @@ const Signup = () => {
 
         <form className="mt-6 space-y-4">
           {/* First + Last name */}
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center">
             <div className="flex flex-col w-full">
               <label
                 htmlFor="firstName"
@@ -42,12 +42,11 @@ const Signup = () => {
                 className="border-[#919EAB]/32 px-[10px] py-[11px] text-sm bg-white border-2 rounded-md w-full focus:ring-2 focus:ring-green-500 focus:outline-none placeholder:text-gray-400"
               />
             </div>
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full pt-[17px]">
               <label
                 htmlFor="lastName"
-                className="text-[#919EAB] font-sans text-xs font-normal leading-4.5 relative top-2 ml-[7px] px-[3px] bg-white w-fit"
               >
-                Last Name
+               
               </label>
               <input
                 id="lastName"
@@ -62,9 +61,7 @@ const Signup = () => {
           <div className="input flex flex-col w-full ">
             <label
               htmlFor="email"
-              className="text-[#919EAB] font-sans text-xs font-normal leading-4.5 relative top-2 ml-[7px] px-[3px] bg-white w-fit"
             >
-              Email address
             </label>
             <input
               id="email"
@@ -112,14 +109,14 @@ const Signup = () => {
             </label>
             <div className="relative">
               <input
-                type={showPassword ? "text" : "password"}
+                type={showConfirmPassword ? "text" : "password"}
                 id="password"
                 placeholder="Confirm password"
                 className="font-sans font-normal text-base leading-6 w-full rounded-md border border-gray-300 px-4 py-2 pr-10 text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute inset-y-0 right-3 flex items-center"
               >
                 <img
@@ -140,12 +137,12 @@ const Signup = () => {
               className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
             />
             <label htmlFor="terms" className="text-sm text-gray-700">
-              I agree to Tech Take’s{" "}
-              <a href="#" className="text-green-600 hover:underline font-medium">
+              I agree to Tech Take’s
+              <a href="#" className="underline px-1 ">
                 Terms of Service
-              </a>{" "}
-              and{" "}
-              <a href="#" className="text-green-600 hover:underline font-medium">
+              </a>
+              and
+              <a href="#" className="underline px-1 ">
                 Privacy Policy
               </a>
               .
