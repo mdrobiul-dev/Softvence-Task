@@ -9,7 +9,7 @@ const Hero = () => {
         <div className="mx-4 md:mx-8 lg:ml-30 flex flex-col lg:flex-row">
           {/* hero text part */}
           <div className="relative w-full lg:w-1/2 mt-8 md:mt-12 lg:mt-22.5 order-2 lg:order-1">
-          <div className="hidden lg:block w-fit h-fit absolut md:top-[36%] lg:top-[30%] lg:left-[23%]">
+          <div className="hidden lg:block w-fit h-fit absolute lg:top-[30%] lg:left-[23%]">
         <img src="/images/underline.png" className="w-full h-full object-cover"/>
       </div>
             <h1 className=" font-sans font-bold text-4xl md:text-5xl lg:text-[84px] leading-tight md:leading-23 text-[#212B36] mb-4 text-center lg:text-left">
