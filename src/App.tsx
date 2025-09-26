@@ -1,30 +1,30 @@
-// import Login from './pages/Login'
-// import Signup from './pages/Signup'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/Home"
-
-// import AccountCreated from "./pages/AccountCreated"
-
-// import Newpassword from "./pages/Newpassword"
-
-// import Forgetpassword from "./pages/Forgetpassword"
-
-// import Emailvariefication from "./pages/Emailvariefication"
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Home from "./pages/Home";
+import AccountCreated from "./pages/AccountCreated";
+import Newpassword from "./pages/Newpassword";
+import Forgetpassword from "./pages/Forgetpassword";
+import Emailvariefication from "./pages/Emailvariefication";
 
 function App() {
- 
-
   return (
-    <main>
-      {/* <Login /> */}
-      {/* <Signup /> */}
-      {/* <Emailvariefication /> */}
-      {/* <Forgetpassword /> */}
-      {/* <Newpassword /> */}
-      {/* <AccountCreated /> */}
-      <Home />
-    </main>
-  )
+    <Router>
+      <main>
+        <Routes>
+          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/email-verification" element={<Emailvariefication />} />
+          <Route path="/forget-password" element={<Forgetpassword />} />
+          <Route path="/new-password" element={<Newpassword />} />
+          <Route path="/account-created" element={<AccountCreated />} />
+        </Routes>
+      </main>
+    </Router>
+  );
 }
 
-export default App
+export default App;
+
