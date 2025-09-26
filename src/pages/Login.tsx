@@ -52,7 +52,7 @@ const Login = () => {
 
       console.log("Login result:", result);
 
-      navigate('/'); 
+      navigate('/home'); 
 
     } catch (err: any) {
     
