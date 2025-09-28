@@ -31,7 +31,7 @@ const Cards = () => {
             <div className="flex flex-col gap-4 md:gap-5 w-full">
               <div className="h-fit w-fit mx-auto lg:mx-0">
                 <img
-                  src="/images/calender.png"
+                  src="/images/mark.png"
                   alt="icon"
                   className="w-12 h-12 md:w-16 md:h-16 object-cover"
                 />
@@ -52,7 +52,7 @@ const Cards = () => {
             <div className="flex flex-col gap-4 md:gap-5 w-full">
               <div className="h-fit w-fit mx-auto lg:mx-0">
                 <img
-                  src="/images/calender.png"
+                  src="/images/graph.png"
                   alt="icon"
                   className="w-12 h-12 md:w-16 md:h-16 object-cover"
                 />
@@ -73,7 +73,7 @@ const Cards = () => {
             <div className="flex flex-col gap-4 md:gap-5 w-full">
               <div className="h-fit w-fit mx-auto lg:mx-0">
                 <img
-                  src="/images/calender.png"
+                  src="/images/shield.png"
                   alt="icon"
                   className="w-12 h-12 md:w-16 md:h-16 object-cover"
                 />
