@@ -96,14 +96,14 @@ export const authServices = {
 
   // Verify OTP endpoint
   verifyOtp: async (email, otp) => {
-    const response = await api.post("/verify_otp", {
+    const response = await api.post("/forgot-verify-otp", {
       email: email,
       otp: otp
     });
     
-    // If verification successful, you might want to update auth status
+   
     if (response.data.verified) {
-      // Update user verification status in localStorage if needed
+   
       const userData = JSON.parse(localStorage.getItem("userData") || "{}");
       userData.email_verified = true;
       localStorage.setItem("userData", JSON.stringify(userData));
@@ -141,7 +141,7 @@ export const authServices = {
       },
     });
     
-    // If password reset successful, clear any existing auth data
+  
     if (response.data.success) {
       localStorage.removeItem("authToken");
       localStorage.removeItem("userData");
@@ -150,49 +150,28 @@ export const authServices = {
     return response.data;
   },
 
-  // Logout function (client-side)
+
   logout: () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("userData");
     localStorage.removeItem("rememberMe");
-    // Optional: Make API call to invalidate token on server
+
     return Promise.resolve();
   },
 
-  // Get current user data from localStorage
+
   getCurrentUser: () => {
     const userData = localStorage.getItem("userData");
     return userData ? JSON.parse(userData) : null;
   },
 
-  // Check if user is authenticated
+ 
   isAuthenticated: () => {
     return !!localStorage.getItem("authToken");
   }
 };
 
-// Profile services (if needed later)
-export const profileServices = {
-  updateProfile: async (formData) => {
-    const response = await api.post("/profile/update", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    
-    // Update user data in localStorage if successful
-    if (response.data.user) {
-      localStorage.setItem("userData", JSON.stringify(response.data.user));
-    }
-    
-    return response.data;
-  },
 
-  getProfile: async () => {
-    const response = await api.get("/profile");
-    return response.data;
-  }
-};
 
 // Utility functions
 export const apiUtils = {
@@ -202,7 +181,6 @@ export const apiUtils = {
     api.defaults.headers.Authorization = `Bearer ${token}`;
   },
 
-  // Clear auth data
   clearAuth: () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("userData");
@@ -210,7 +188,6 @@ export const apiUtils = {
     delete api.defaults.headers.Authorization;
   },
 
-  // Get auth token
   getToken: () => {
     return localStorage.getItem("authToken");
   }

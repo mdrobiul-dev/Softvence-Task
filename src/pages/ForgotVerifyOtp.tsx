@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { useNavigate, useLocation } from "react-router-dom";
-import { authServices } from "../services/api";
+import { authServices } from "../services/api"; 
 
-const EmailVerification = () => {
+const ForgotVerifyOtp = () => {
   const [code, setCode] = useState(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -11,8 +11,8 @@ const EmailVerification = () => {
   const [resendLoading, setResendLoading] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const [email, setEmail] = useState("");
-  const [otpCode, setOtpCode] = useState("");
-
+  const [otpCode, setOtpCode] = useState(""); 
+  
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,7 +36,7 @@ const EmailVerification = () => {
       const newCode = [...code];
       newCode[index] = value;
       setCode(newCode);
-      setError("");
+      setError(""); 
 
       if (value && index < 5) {
         inputRefs.current[index + 1]?.focus();
@@ -44,22 +44,19 @@ const EmailVerification = () => {
     }
   };
 
-  const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    if (e.key === "Backspace" && !code[index] && index > 0) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+    if (e.key === 'Backspace' && !code[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const pasteData = e.clipboardData.getData("text");
-    const numbers = pasteData.replace(/[^0-9]/g, "").slice(0, 6);
-
+    const pasteData = e.clipboardData.getData('text');
+    const numbers = pasteData.replace(/[^0-9]/g, '').slice(0, 6);
+    
     if (numbers.length === 6) {
-      const newCode = numbers.split("");
+      const newCode = numbers.split('');
       setCode(newCode);
       newCode.forEach((digit, index) => {
         if (inputRefs.current[index]) {
@@ -92,35 +89,32 @@ const EmailVerification = () => {
 
     try {
       const result = await authServices.verifyOtp(email, verificationCode);
+      console.log("Forgot password OTP verification result:", result);
 
-      // Fix: Check for success based on the actual API response structure
-      if (
-        result.status === 200 ||
-        result.status === 201 ||
-        result.message?.toLowerCase().includes("success") ||
-        result.message?.toLowerCase().includes("verified")
-      ) {
-        setSuccess("Email verified successfully! Redirecting to login...");
-
+      // Check for success based on the actual API response structure
+      if (result.status === 200 || result.status === 201 || result.message?.toLowerCase().includes("success") || result.message?.toLowerCase().includes("verified")) {
+        setSuccess("OTP verified successfully! Redirecting to set new password...");
+        
         setTimeout(() => {
-          navigate("/forgot-verify-otp", {
-            state: { email: formData.email },
+          navigate('/new-password', { 
+            state: { 
+              email: email,
+              verificationCode: verificationCode 
+            } 
           });
         }, 2000);
       } else {
-        setError("Verification failed. Please try again.");
+        setError("OTP verification failed. Please try again.");
       }
     } catch (err: any) {
       console.log("Verification error:", err);
-
+      
       if (err.response) {
         const errorData = err.response.data;
-
+        
         if (errorData.errors) {
           const errorMessages = Object.values(errorData.errors).flat();
-          setError(
-            errorMessages.join(", ") || "Verification failed. Please try again."
-          );
+          setError(errorMessages.join(', ') || "Verification failed. Please try again.");
         } else if (errorData.message) {
           setError(errorData.message);
         } else {
@@ -145,16 +139,17 @@ const EmailVerification = () => {
 
     try {
       const result = await authServices.resendOtp(email);
-      console.log("Verification result:", result);
+      console.log("Resend OTP result:", result);
+
       if (result.data?.otp) {
         const newOtp = result.data.otp;
         setOtpCode(newOtp);
-
+        
         setSuccess(`New verification code generated! Use code: ${newOtp}`);
         setResendCooldown(60);
         setCode(Array(6).fill(""));
         inputRefs.current[0]?.focus();
-
+        
         console.log("OTP for testing:", newOtp);
       } else if (result.message) {
         setSuccess(result.message);
@@ -188,7 +183,7 @@ const EmailVerification = () => {
       <div className="w-full max-w-[530px] bg-white p-8 rounded-lg">
         {/* Back Button */}
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/forgot-password")}
           className="flex items-center text-green-600 text-sm font-medium mb-6 hover:underline"
         >
           <IoIosArrowBack /> <span className="pl-2">Back</span>
@@ -196,12 +191,12 @@ const EmailVerification = () => {
 
         {/* Title */}
         <h2 className="font-sans text-2xl font-bold leading-9 text-[#212B36]">
-          Please check your email!
+          Verify your email
         </h2>
         <p className="font-sans font-normal text-base leading-6 text-[#637381] mt-2">
-          We've emailed a 6-digit confirmation code to
-          <span className="font-medium text-[#212B36]"> {email}</span>, please
-          enter the code below to verify your email.
+          We've sent a 6-digit verification code to
+          <span className="font-medium text-[#212B36]"> {email}</span>. 
+          Please enter the code below to reset your password.
         </p>
 
         {/* Success Message */}
@@ -250,24 +245,20 @@ const EmailVerification = () => {
             disabled={loading}
             className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-md shadow transition disabled:bg-green-400 disabled:cursor-not-allowed"
           >
-            {loading ? "Verifying..." : "Verify"}
+            {loading ? "Verifying..." : "Verify OTP"}
           </button>
         </form>
 
         {/* Resend Code */}
         <p className="mt-4 text-center text-sm text-gray-600">
-          Don't have a code?{" "}
+          Didn't receive the code?{" "}
           <button
             type="button"
             onClick={handleResendCode}
             disabled={resendLoading || resendCooldown > 0}
             className="text-green-600 font-medium hover:underline disabled:text-gray-400 disabled:cursor-not-allowed"
           >
-            {resendLoading
-              ? "Sending..."
-              : resendCooldown > 0
-              ? `Resend in ${resendCooldown}s`
-              : "Resend code"}
+            {resendLoading ? "Sending..." : resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend code"}
           </button>
         </p>
       </div>
@@ -275,4 +266,4 @@ const EmailVerification = () => {
   );
 };
 
-export default EmailVerification;
+export default ForgotVerifyOtp;

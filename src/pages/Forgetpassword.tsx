@@ -10,37 +10,37 @@ const Forgetpassword = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setMessage("");
-    setLoading(true);
+  e.preventDefault();
+  setMessage("");
+  setLoading(true);
 
-    try {
-     
-      const result = await authServices.forgotPassword(email);
+  try {
+    const result = await authServices.forgotPassword(email);
 
-      console.log("Forgot password result:", result);
+    console.log("Forgot password result:", result);
 
-      setMessage("✅ Password reset link has been sent to your email.");
-      
-     
-      setTimeout(() => {
-        navigate('/login');
-      }, 3000);
+    setMessage("✅ Password reset link has been sent to your email.");
+    
+    setTimeout(() => {
+      navigate('/forgot-verify-otp', { 
+        state: { email: email } 
+      });
+    }, 3000);
 
-    } catch (error: any) {
-      console.log("Forgot password error:", error);
-      
-      if (error.response?.data?.message) {
-        setMessage("❌ " + error.response.data.message);
-      } else if (error.message) {
-        setMessage("❌ " + error.message);
-      } else {
-        setMessage("❌ Something went wrong. Please try again.");
-      }
-    } finally {
-      setLoading(false);
+  } catch (error: any) {
+    console.log("Forgot password error:", error);
+    
+    if (error.response?.data?.message) {
+      setMessage("❌ " + error.response.data.message);
+    } else if (error.message) {
+      setMessage("❌ " + error.message);
+    } else {
+      setMessage("❌ Something went wrong. Please try again.");
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleBack = () => {
     navigate("/");

@@ -7,6 +7,7 @@ import AccountCreated from "./pages/AccountCreated";
 import Newpassword from "./pages/Newpassword";
 import Forgetpassword from "./pages/Forgetpassword";
 import Emailvariefication from "./pages/Emailvariefication";
+import ForgotVerifyOtp from "./pages/ForgotVerifyOtp";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/email-verification" element={<Emailvariefication />} />
           <Route path="/forget-password" element={<Forgetpassword />} />
+          <Route path="/forgot-verify-otp" element={<ForgotVerifyOtp />} />
           <Route path="/new-password" element={<Newpassword />} />
           <Route path="/account-created" element={<AccountCreated />} />
         </Routes>
