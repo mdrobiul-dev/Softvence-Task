@@ -39,7 +39,7 @@ const Review = () => {
               <div className="flex gap-3.5 pb-6.5">
                 <div className="w-12 h-12">
                   <img
-                    src="/images/profile.png"
+                    src="/images/profile_2.png"
                     className="w-full h-full object-cover rounded-full"
                     alt="profile"
                   />
@@ -62,7 +62,7 @@ const Review = () => {
               <div className="flex gap-3.5 pb-6.5">
                 <div className="w-12 h-12">
                   <img
-                    src="/images/profile.png"
+                    src="/images/profile_3.png"
                     className="w-full h-full object-cover rounded-full"
                     alt="profile"
                   />
