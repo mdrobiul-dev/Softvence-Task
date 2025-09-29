@@ -41,7 +41,6 @@ api.interceptors.response.use(
       // Token expired or invalid
       localStorage.removeItem("authToken");
       localStorage.removeItem("userData");
-      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
@@ -129,26 +128,25 @@ export const authServices = {
   },
 
   // Reset password endpoint
-  resetPassword: async (token, email, passwordData) => {
-    const formData = new FormData();
-    formData.append('password', passwordData.password);
-    formData.append('password_confirmation', passwordData.confirmPassword);
-    formData.append('token', token);
+resetPassword: async (token, passwordData) => {
+  const formData = new FormData();
+  formData.append('password', passwordData.password);
+  formData.append('password_confirmation', passwordData.confirmPassword);
+  formData.append('token', token); // Only token is needed, no email
 
-    const response = await api.post("/reset-password", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    
+  const response = await api.post("/reset-password", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   
-    if (response.data.success) {
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("userData");
-    }
-    
-    return response.data;
-  },
+  if (response.data.success) {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userData");
+  }
+  
+  return response.data;
+},
 
 
   logout: () => {

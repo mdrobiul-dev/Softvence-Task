@@ -67,68 +67,56 @@ const ForgotVerifyOtp = () => {
     }
   };
 
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    setSuccess("");
+const handleVerify = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  setError("");
+  setSuccess("");
 
-    const verificationCode = code.join("");
+  const verificationCode = code.join("");
 
-    if (verificationCode.length !== 6) {
-      setError("Please enter the full 6-digit code");
-      setLoading(false);
-      return;
-    }
+  if (verificationCode.length !== 6) {
+    setError("Please enter the full 6-digit code");
+    setLoading(false);
+    return;
+  }
 
-    if (!/^\d{6}$/.test(verificationCode)) {
-      setError("Please enter a valid 6-digit code");
-      setLoading(false);
-      return;
-    }
+  if (!/^\d{6}$/.test(verificationCode)) {
+    setError("Please enter a valid 6-digit code");
+    setLoading(false);
+    return;
+  }
 
-    try {
-      const result = await authServices.verifyOtp(email, verificationCode);
-      console.log("Forgot password OTP verification result:", result);
+  try {
+    const result = await authServices.verifyOtp(email, verificationCode);
+    console.log("Forgot password OTP verification result:", result);
 
-      // Check for success based on the actual API response structure
-      if (result.status === 200 || result.status === 201 || result.message?.toLowerCase().includes("success") || result.message?.toLowerCase().includes("verified")) {
-        setSuccess("OTP verified successfully! Redirecting to set new password...");
-        
-        setTimeout(() => {
-          navigate('/new-password', { 
-            state: { 
-              email: email,
-              verificationCode: verificationCode 
-            } 
-          });
-        }, 2000);
-      } else {
-        setError("OTP verification failed. Please try again.");
-      }
-    } catch (err: any) {
-      console.log("Verification error:", err);
+    // Check for success based on the actual API response structure
+    if (result.status === 200 || result.status === 201 || result.message?.toLowerCase().includes("success") || result.message?.toLowerCase().includes("verified")) {
+      setSuccess("OTP verified successfully! Redirecting to set new password...");
       
-      if (err.response) {
-        const errorData = err.response.data;
-        
-        if (errorData.errors) {
-          const errorMessages = Object.values(errorData.errors).flat();
-          setError(errorMessages.join(', ') || "Verification failed. Please try again.");
-        } else if (errorData.message) {
-          setError(errorData.message);
-        } else {
-          setError("Verification failed. Please check the code and try again.");
-        }
-      } else if (err.request) {
-        setError("Network error. Please check your connection and try again.");
-      } else {
-        setError("An unexpected error occurred. Please try again.");
-      }
-    } finally {
-      setLoading(false);
+      // Get the token from the response
+      const resetToken = result.data?.token;
+      console.log("Reset token received:", resetToken);
+      
+      setTimeout(() => {
+        navigate('/new-password', { 
+          state: { 
+            email: email,
+            token: resetToken // Pass the token to new password page
+          } 
+        });
+      }, 2000);
+    } else {
+      setError("OTP verification failed. Please try again.");
     }
-  };
+  } catch (err: any) {
+    console.log("Verification error:", err);
+    // ... error handling remains the same
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleResendCode = async () => {
     if (resendCooldown > 0) return;

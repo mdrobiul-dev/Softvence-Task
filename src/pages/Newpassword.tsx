@@ -14,8 +14,8 @@ const Newpassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Get reset token from navigation state (this should come from email link)
-  const resetToken = location.state?.resetToken || "";
+  // Get token from navigation state (email is not needed for reset-password)
+  const token = location.state?.token || "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +26,7 @@ const Newpassword = () => {
 
     console.log("Password:", password);
     console.log("Confirm Password:", confirmPassword);
-    console.log("Reset Token:", resetToken);
+    console.log("Token:", token);
 
     // Validation
     if (!password || !confirmPassword) {
@@ -47,8 +47,8 @@ const Newpassword = () => {
       return;
     }
 
-    if (!resetToken) {
-      setError("Missing reset token. Please use the link from your email.");
+    if (!token) {
+      setError("Missing reset token. Please restart the password reset process.");
       setLoading(false);
       return;
     }
@@ -56,9 +56,9 @@ const Newpassword = () => {
     try {
       console.log("Calling resetPassword API...");
       
+      // Only pass token and password data (no email)
       const result = await authServices.resetPassword(
-        resetToken, 
-        "", // email parameter (empty if not needed)
+        token,
         {
           password: password,
           confirmPassword: confirmPassword
@@ -71,7 +71,7 @@ const Newpassword = () => {
         setSuccess("Password updated successfully! Redirecting to login...");
         
         setTimeout(() => {
-          navigate('/login');
+          navigate('/');
         }, 3000);
       } else {
         setError("Password update failed. Please try again.");
@@ -83,9 +83,7 @@ const Newpassword = () => {
         const errorData = err.response.data;
         console.log("Error response data:", errorData);
         
-        if (errorData.message === "Invalid Token") {
-          setError("Invalid or expired reset token. Please request a new password reset.");
-        } else if (errorData.errors) {
+        if (errorData.errors) {
           const errorMessages = Object.values(errorData.errors).flat();
           setError(errorMessages.join(', ') || "Password reset failed. Please try again.");
         } else if (errorData.message) {
@@ -131,10 +129,16 @@ const Newpassword = () => {
           Please enter your new password below to update your account credentials.
         </p>
 
-        {!resetToken && (
+        {/* Debug info - remove in production */}
+        <div className="mt-4 p-2 bg-blue-50 border border-blue-200 rounded-md text-xs">
+          <p>Debug Info:</p>
+          <p>Token: {token ? "✓ Provided" : "Not provided"}</p>
+        </div>
+
+        {!token && (
           <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
             <p className="text-yellow-700 text-sm text-center">
-              Missing reset token. Please use the link from your password reset email.
+              Missing reset token. Please restart the password reset process.
             </p>
           </div>
         )}
@@ -204,7 +208,7 @@ const Newpassword = () => {
 
           <button
             type="submit"
-            disabled={loading || !resetToken}
+            disabled={loading || !token}
             className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-md shadow transition disabled:bg-green-400 disabled:cursor-not-allowed"
           >
             {loading ? "Updating Password..." : "Update Password"}
@@ -215,7 +219,7 @@ const Newpassword = () => {
           onClick={() => navigate("/forgot-password")}
           className="w-full text-center text-green-600 text-sm font-medium mt-4 hover:underline"
         >
-          Request New Reset Link
+          Back to Forgot Password
         </button>
 
         <div className="mt-4 text-center text-xs text-gray-500">

@@ -24,63 +24,79 @@ const Login = () => {
     if (error) setError("");
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  setError("");
 
-    // Validation
-    if (!formData.email || !formData.password) {
-      setError("Please fill in all fields");
-      setLoading(false);
-      return;
+  // Validation
+  if (!formData.email || !formData.password) {
+    setError("Please fill in all fields");
+    setLoading(false);
+    return;
+  }
+
+  if (!formData.email.includes('@')) {
+    setError("Please enter a valid email address");
+    setLoading(false);
+    return;
+  }
+
+  try {
+    console.log("🔄 Making login API call...");
+    const result = await authServices.login({
+      email: formData.email,
+      password: formData.password,
+      remember: formData.remember
+    });
+
+    console.log("✅ Login API response:", result);
+    console.log("🔍 Response type:", typeof result);
+    console.log("🔍 Response keys:", Object.keys(result));
+
+    // Check what properties exist in the response
+    if (result.redirect) {
+      console.log("🔄 API returned redirect to:", result.redirect);
+      // If API returns a redirect URL, navigate to it
+      navigate(result.redirect);
+    } else if (result.success || result.token || result.user || result.data) {
+      console.log("✅ Login successful, navigating to /home");
+      navigate('/home');
+    } else {
+      console.log("❌ Login failed - no success indicators");
+      setError(result.message || "Login failed. Please check your credentials.");
     }
 
-    if (!formData.email.includes('@')) {
-      setError("Please enter a valid email address");
-      setLoading(false);
-      return;
-    }
-
-    try {
-     
-      const result = await authServices.login({
-        email: formData.email,
-        password: formData.password,
-        remember: formData.remember
-      });
-
-      console.log("Login result:", result);
-
-      navigate('/home'); 
-
-    } catch (err: any) {
+  } catch (err: any) {
+    console.log("❌ Login error details:", err);
+    console.log("🔍 Error response:", err.response);
+    console.log("🔍 Error status:", err.response?.status);
+    console.log("🔍 Error headers:", err.response?.headers);
     
-      if (err.response) {
-        
-        const errorData = err.response.data;
-        
-        if (errorData.errors) {
-       
-          const errorMessages = Object.values(errorData.errors).flat();
-          setError(errorMessages.join(', ') || "Login failed. Please try again.");
-        } else if (errorData.message) {
-          setError(errorData.message);
-        } else {
-          setError("Login failed. Please check your credentials and try again.");
-        }
-      } else if (err.request) {
-       
-        setError("Network error. Please check your connection and try again.");
+    if (err.response?.status === 302 || err.response?.headers?.location) {
+      console.log("🔄 Server is redirecting to:", err.response.headers.location);
+      // If server returns a redirect, show error instead of following it
+      setError("Invalid credentials. Please check your email and password.");
+    } else if (err.response) {
+      const errorData = err.response.data;
+      
+      if (errorData.errors) {
+        const errorMessages = Object.values(errorData.errors).flat();
+        setError(errorMessages.join(', ') || "Login failed. Please try again.");
+      } else if (errorData.message) {
+        setError(errorData.message);
       } else {
-       
-        setError("An unexpected error occurred. Please try again.");
+        setError("Login failed. Please check your credentials and try again.");
       }
-    } finally {
-      setLoading(false);
+    } else if (err.request) {
+      setError("Network error. Please check your connection and try again.");
+    } else {
+      setError("An unexpected error occurred. Please try again.");
     }
-  };
-
+  } finally {
+    setLoading(false);
+  }
+};
   const handleForgotPassword = (e: React.MouseEvent) => {
     e.preventDefault();
     navigate('/forget-password'); 
